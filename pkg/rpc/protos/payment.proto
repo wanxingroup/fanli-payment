@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package payment.pkg.rpc.protos;
+
+option go_package = "protos";
+
+import "payment_common.proto";
+
+service PaymentController {
+    
+    // 获取Payment
+    rpc GetPayment (GetPaymentRequest) returns (GetPaymentReply) {
+    }
+    
+    // 获取Payment列表
+    rpc GetPaymentList (GetPaymentListRequest) returns (GetPaymentListReply) {
+    }
+    
+    // 创建Payment
+    rpc CreatePayment (CreatePaymentRequest) returns (CreatePaymentReply) {
+    }
+
+    //完成订单
+    rpc FinishPayment(FinishPaymentRequest) returns (FinishPaymentReply) {
+    }
+}
+
+enum PaymentStatus {
+    Unknown = 0;
+    NotPay = 1; //未支付
+    Completed = 6; //完成
+}
+
+message GetPaymentRequest {
+    uint64 paymentId = 1;
+    uint64 shopId = 2;
+}
+
+message GetPaymentReply {
+    Error err = 1;
+    PaymentInformation paymentInformation = 2;
+}
+
+message GetPaymentListRequest {
+    uint64 shopId = 1;
+    PaymentStatus status = 2;
+    uint64 page = 3;
+    uint64 pageSize = 4;
+    uint32 scene = 5;
+
+}
+
+message GetPaymentListReply {
+    Error err = 1;
+    repeated PaymentInformation paymentInformationList = 2;
+    uint64 count = 3;
+}
+
+message CreatePaymentRequest {
+    uint64 shopId = 1;
+    uint64 userId = 2;
+    uint64 amount = 3;
+    string note = 4;
+}
+
+message CreatePaymentReply {
+    Error err = 1;
+    PaymentInformation payment = 2;
+}
+
+message PaymentInformation {
+    uint64 paymentId = 1;
+    uint64 shopId = 2;
+    uint64 userId = 3;
+    uint64 amount = 4;
+    string note = 5;
+    PaymentStatus status = 6;
+    int64 createTime = 7;
+}
+
+message FinishPaymentRequest {
+    uint64 paymentId = 1;
+}
+
+message FinishPaymentReply {
+    Error err = 1;
+    PaymentInformation payment = 2;
+}
